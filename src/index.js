@@ -27,11 +27,11 @@ class CasesComponent extends React.Component {
   }
 
   handleSubmit(event) {
+    event.preventDefault();
     if (this.stateContainsInfo()) {
       this.props.info.setLocationInfo(this.state.lat, this.state.long, this.state.radius);
+      this.forceUpdate();
     }
-    event.preventDefault();
-    this.forceUpdate();
   }
 
   stateContainsInfo() {
@@ -46,19 +46,19 @@ class CasesComponent extends React.Component {
       <div className="requiredInfo">
         <form className="submissionForm" onSubmit={this.handleSubmit}>
           <label>
-            Latitude: <input type="text" name="lat" onChange={this.handleChange} />
+            Latitude: <input type="text" name="lat" onBlur={this.handleChange} />
           </label>
           <label>
-            Longitude: <input type="text" name="long" onChange={this.handleChange} />
+            Longitude: <input type="text" name="long" onBlur={this.handleChange} />
           </label>
           <label>
-            Radius in Miles: <input type="text" name="radius" onChange={this.handleChange} />
+            Radius in Miles: <input type="text" name="radius" onBlur={this.handleChange} />
           </label>
           <input type="submit" value="Find Cases" />
         </form>
         <div className="resultsInfo" >
-          <h3>Number of COVID-19 cases nearby: {infoProvided ? " " + cases : " No user info found"}</h3>
-          {infoProvided && !cases ? (<h4>The nearest confirmed case is {" " + this.props.info.nearestCaseByDistance() + " "} miles away</h4>) : ""}
+          <h3>Number of COVID-19 cases in {infoProvided ? this.state.radius : 0} mile radius: {infoProvided ? " " + cases : " No user info found"}</h3>
+          <h3>The nearest confirmed case is {infoProvided ? " " + this.props.info.nearestCaseByDistance() : 0} miles away</h3>
         </div>
 
       </div>
