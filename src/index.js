@@ -27,7 +27,7 @@ class CasesComponent extends React.Component {
   }
 
   handleSubmit(event) {
-    if (this.stateContainsInfo()){
+    if (this.stateContainsInfo()) {
       this.props.info.setLocationInfo(this.state.lat, this.state.long, this.state.radius);
     }
     event.preventDefault();
@@ -40,28 +40,27 @@ class CasesComponent extends React.Component {
 
   render() {
     const infoProvided = this.props.info.hasInfo();
-    const cases =  infoProvided ? (this.props.info.numNearbyCases()) : 0;
+    const cases = infoProvided ? (this.props.info.numNearbyCases()) : 0;
     return (
-      
-      <div className="casesInfo">
-        <form onSubmit={this.handleSubmit}>
+
+      <div className="requiredInfo">
+        <form className="submissionForm" onSubmit={this.handleSubmit}>
           <label>
-            Latitude: <input type="text" name="lat" onChange={this.handleChange}/>
+            Latitude: <input type="text" name="lat" onChange={this.handleChange} />
           </label>
           <label>
-            Longitude: <input type="text" name="long" onChange={this.handleChange}/>
+            Longitude: <input type="text" name="long" onChange={this.handleChange} />
           </label>
           <label>
-            Radius in Miles: <input type="text" name="radius" onChange={this.handleChange}/>
+            Radius in Miles: <input type="text" name="radius" onChange={this.handleChange} />
           </label>
-          <input type="submit" value="Find Cases"/>
+          <input type="submit" value="Find Cases" />
         </form>
-        <h3>Number of COVID-19 cases nearby: {infoProvided ? " " + cases : " No user info found"}</h3>
-        {infoProvided && !cases ? (
-          <h4>
-            The nearest confirmed case is {" " + this.props.info.nearestCaseByDistance() + " "} miles away
-          </h4>
-        ) : ""}
+        <div className="resultsInfo" >
+          <h3>Number of COVID-19 cases nearby: {infoProvided ? " " + cases : " No user info found"}</h3>
+          {infoProvided && !cases ? (<h4>The nearest confirmed case is {" " + this.props.info.nearestCaseByDistance() + " "} miles away</h4>) : ""}
+        </div>
+
       </div>
     );
   }

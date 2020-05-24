@@ -1,11 +1,17 @@
-.casesInfo {
+.requiredInfo {
     display: flex;
     justify-content: space-around;
+    height: 10rem;
 }
 
-form {
+.submissionForm {
     display: flex;
     flex-direction: column;
     justify-content: space-around;
-    height: 10rem;
+}
+
+.resultsInfo {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-around;
 }
