@@ -1,5 +1,7 @@
 import { readString } from 'react-papaparse';
 
+const COL_START = 2;
+
 export default class data_model {
     constructor() {
         // class vars
@@ -7,6 +9,7 @@ export default class data_model {
         this.lat = null;
         this.long = null;
         this.radius = null;
+        this.minDistance = Number.MAX_VALUE;
 
         // load covid data
         // PARSE THIS DATA BETTTERRRRRRRRRRRRRRRRRRRRRRRR
@@ -15,7 +18,7 @@ export default class data_model {
             // clean data
             this.cols = data.slice(0, 1);
             this.data = data.slice(1)
-                .map((row) => { return row.slice(3, 5) })
+                .map((row) => { return row.slice(COL_START, COL_START + 2) })
                 .sort((a, b) => { return a[0] - b[0] });
         });
     }
@@ -37,6 +40,10 @@ export default class data_model {
         // probably make this faster with kd-tree but ¯\_(ツ)_/¯
         for (row of this.data) {
             cases = cases + (this.nearby(row[0], row[1]) ? 1 : 0);
+            const d = this.distance(row[0], row[1]);
+            if (d < this.minDistance) {
+                this.minDistance = d;
+            }
         }
         return cases;
     }
@@ -46,15 +53,14 @@ export default class data_model {
             alert("Must enter a latitude, longitude, and radius!");
             return null;
         }
-        let i = 0;
-        let minDistance = this.distance(this.data[0][0], this.data[0][1]);
+
         // probably make this faster with kd-tree but ¯\_(ツ)_/¯
-        for (let row of this.data) {
+        /*
+        for (row of this.data) {
             minDistance = Math.min(minDistance, this.distance(row[0], row[1]));
-            i = i + 1;
-        }
-        
-        return minDistance;
+        }*/
+
+        return this.minDistance;
     }
 
     // easier interface for internal use
