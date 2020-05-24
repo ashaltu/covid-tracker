@@ -97,6 +97,7 @@ export default class data_model {
         this.lat = lat;
         this.long = long;
         this.radius = radius;
+        this.minDistance = Number.MAX_VALUE;
     }
 
     hasInfo() {
