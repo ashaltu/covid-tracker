@@ -43,7 +43,7 @@ class CasesComponent extends React.Component {
     const cases =  infoProvided ? (this.props.info.numNearbyCases()) : 0;
     return (
       
-      <div>
+      <div className="casesInfo">
         <form onSubmit={this.handleSubmit}>
           <label>
             Latitude: <input type="text" name="lat" onChange={this.handleChange}/>
