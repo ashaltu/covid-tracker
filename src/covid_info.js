@@ -1,6 +1,6 @@
 import { readString } from 'react-papaparse';
 
-const COL_START = 2;
+const COL_START = process.env.REACT_APP_STARTING_COLUMN;
 
 export default class data_model {
     constructor() {

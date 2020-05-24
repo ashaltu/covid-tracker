@@ -5,6 +5,7 @@
 
 # data
 *.csv
+!test.csv
 
 # dependencies
 /node_modules
