@@ -1,4 +1,4 @@
-import {readString} from 'react-papaparse';
+import { readString } from 'react-papaparse';
 
 export default class data_model {
     constructor() {
@@ -13,44 +13,67 @@ export default class data_model {
         // (find better dataset, look at confirmed cases, etc.)
         this.load_data().then((data) => {
             // clean data
-            this.cols = data.slice(0,1);
+            this.cols = data.slice(0, 1);
             this.data = data.slice(1)
-            .map((row) => {return row.slice(3,5)})
-            .sort((a,b) => {return a[0] - b[0]});
+                .map((row) => { return row.slice(3, 5) })
+                .sort((a, b) => { return a[0] - b[0] });
         });
     }
 
+    // easier interface to check if a single lat/long point is in radius
+    nearby(otherLat, otherLong) {
+        return this.distance(otherLat, otherLong) <= this.radius;
+    }
+
     numNearbyCases() {
-        if (!this.lat || !this.long || !this.radius) {
+        if (!this.hasInfo()) {
             alert("Must enter a latitude, longitude, and radius!");
             return null;
         }
 
-        let cases = 0;
+        let cases = 0;;
+        let row = [];
+
         // probably make this faster with kd-tree but ¯\_(ツ)_/¯
-        for(let row of this.data) {
+        for (row of this.data) {
             cases = cases + (this.nearby(row[0], row[1]) ? 1 : 0);
         }
         return cases;
     }
 
-    // easier interface to check if a single lat/long point is in radius
-    nearby(otherLat, otherLong) {
-        const dist = this.distance(this.lat, this.long, otherLat, otherLong);
-        return dist <= this.radius;
+    nearestCaseByDistance() {
+        if (!this.hasInfo()) {
+            alert("Must enter a latitude, longitude, and radius!");
+            return null;
+        }
+        let i = 0;
+        let minDistance = this.distance(this.data[0][0], this.data[0][1]);
+        // probably make this faster with kd-tree but ¯\_(ツ)_/¯
+        for (let row of this.data) {
+            minDistance = Math.min(minDistance, this.distance(row[0], row[1]));
+            i = i + 1;
+        }
+        
+        return minDistance;
     }
 
-    // great circle distance (haversine) between two points
-    distance(lat1, long1, lat2, long2) {
-        var p = 0.017453292519943295;    // Math.PI / 180
-        var c = Math.cos;
-        var a = 0.5 - c((lat2 - lat1) * p)/2 + 
+    // easier interface for internal use
+    distance(otherLat, otherLong) {
+        return this.haversineDistance(this.lat, this.long, otherLat, otherLong);
+    }
+
+    // provided for public use great circle distance (haversine) between two points
+    // assumes lat,long,radius are non-null
+    haversineDistance(lat1, long1, lat2, long2) {
+        const p = 0.017453292519943295;    // Math.PI / 180
+        const c = Math.cos;
+        const a = 0.5 - c((lat2 - lat1) * p)/2 + 
                 c(lat1 * p) * c(lat2 * p) * 
                 (1 - c((long2 - long1) * p))/2;
       
         return (12742 * Math.asin(Math.sqrt(a))) / 1.609344; // 1.609344 converts km->miles
     }
-    
+
     // fetch data from csv
     async load_data() {
         const request = async () => {
@@ -63,7 +86,7 @@ export default class data_model {
 
     setLocationInfo(lat, long, radius) {
         if (!lat || !long || !radius) {
-            alert("Bad location info!");
+            alert("Bad location info provided!");
         }
         this.lat = lat;
         this.long = long;

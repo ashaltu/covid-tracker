@@ -39,8 +39,10 @@ class CasesComponent extends React.Component {
   }
 
   render() {
+    const infoProvided = this.props.info.hasInfo();
+    const cases =  infoProvided ? (this.props.info.numNearbyCases()) : 0;
     return (
-
+      
       <div>
         <form onSubmit={this.handleSubmit}>
           <label>
@@ -54,8 +56,12 @@ class CasesComponent extends React.Component {
           </label>
           <input type="submit" value="Find Cases"/>
         </form>
-          Number of COVID-19 cases nearby:
-        {this.props.info.hasInfo() ? " " + this.props.info.numNearbyCases() : " No user info found"}
+        <h3>Number of COVID-19 cases nearby: {infoProvided ? " " + cases : " No user info found"}</h3>
+        {infoProvided && !cases ? (
+          <h4>
+            The nearest confirmed case is {" " + this.props.info.nearestCaseByDistance() + " "} miles away
+          </h4>
+        ) : ""}
       </div>
     );
   }
