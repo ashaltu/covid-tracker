@@ -1,6 +1,6 @@
 import { readString } from 'react-papaparse';
 
-const COL_START = process.env.REACT_APP_STARTING_COLUMN;
+const COL_START = parseInt(process.env.REACT_APP_STARTING_COLUMN);
 
 export default class data_model {
     constructor() {
@@ -18,7 +18,7 @@ export default class data_model {
             // clean data
             this.cols = data.slice(0, 1);
             this.data = data.slice(1)
-                .map((row) => { return row.slice(COL_START, COL_START + 2) })
+                .map((row) =>  row.slice(COL_START, COL_START + 2))
                 .sort((a, b) => { return a[0] - b[0] });
         });
     }
@@ -45,6 +45,7 @@ export default class data_model {
                 this.minDistance = d;
             }
         }
+        
         return cases;
     }
 
@@ -59,7 +60,6 @@ export default class data_model {
         for (row of this.data) {
             minDistance = Math.min(minDistance, this.distance(row[0], row[1]));
         }*/
-
         return this.minDistance;
     }
 
